@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Models\User;
+use App\Models\OtpCode;
 use App\Events\UserRegistered;
+use App\Events\RegeneratedOtpCodeEvent;
+use Carbon\Carbon;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -55,8 +58,56 @@ class AuthController extends Controller
         ], 409);
     }
 
-    public function verification()
+    public function verification(Request $request)
     {
+        Validator::make($request->all(), ['otp' => 'required']);
 
+        $otp_code = OtpCode::where('otp', $request->otp)->first();
+
+        if (!$otp_code) {
+            return response()->json([
+                "response_code" => 400,
+                "response_message" => "OTP not found!"
+            ], 400);
+        }
+
+        $now = Carbon::now();
+
+        if ($now > $otp_code->valid_until) {
+            return response()->json([
+                "response_code" => 400,
+                "response_message" => "OTP expired!"
+            ], 400);
+        }
+
+        $user = User::find($otp_code->user_id);
+        $user->email_verified_at = $now;
+        $user->save();
+
+        // delete otp
+        $otp_code->delete();
+
+        return response()->json([
+            "response_code" => 200,
+            "response_message" => "E-mail verified!"
+        ], 200);
+    }
+
+    public function regenerateOtpCode(Request $request)
+    {
+        Validator::make($request->all(), ['email' => 'required']);
+
+        $user = User::where('email', $request->email)->first();
+    
+        $user->generate_otp_code();
+
+        // event & listener
+        event(new RegeneratedOtpCodeEvent($user));
+
+        return response()->json([
+            "response_code" => 201,
+            "response_message" => "OTP Code generated!",
+            "data" => $user
+        ], 201);
     }
 }

@@ -6,7 +6,6 @@ use Mail;
 use App\Mail\UserRegisterMail;
 use App\Events\UserRegistered;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 
 class SendEmailOtpCode implements ShouldQueue

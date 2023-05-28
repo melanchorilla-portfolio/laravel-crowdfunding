@@ -24,4 +24,6 @@ Route::group([
     'prefix' => 'auth'
 ], function () {
     Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/verification', [AuthController::class, 'verification']);
+    Route::post('/regenerate-otp-code', [AuthController::class, 'regenerateOtpCode']);
 });

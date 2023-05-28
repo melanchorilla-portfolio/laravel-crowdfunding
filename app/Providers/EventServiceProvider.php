@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Events\UserRegistered;
+use App\Events\RegeneratedOtpCodeEvent;
 use App\Listeners\SendEmailOtpCode;
+use App\Listeners\ResendEmailOtpCode;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -23,6 +25,9 @@ class EventServiceProvider extends ServiceProvider
         UserRegistered::class => [
             SendEmailOtpCode::class
         ],
+        RegeneratedOtpCodeEvent::class => [
+            ResendEmailOtpCode::class
+        ],     
     ];
 
     /**
