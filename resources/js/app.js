@@ -11,6 +11,16 @@ import App from './App.vue';
 import router from './router';
 
 
+import 'vuetify/styles';
+import { createVuetify } from 'vuetify';
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
+
+const vuetify = createVuetify({
+    components,
+    directives,
+});
+
 /**
  * Next, we will create a fresh Vue application instance. You may then begin
  * registering components with the application instance so they are ready
@@ -19,6 +29,7 @@ import router from './router';
 
 const app = createApp(App);
 app.use(router);
+app.use(vuetify);
 
 
 /**
