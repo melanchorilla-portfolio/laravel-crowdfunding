@@ -25,5 +25,9 @@ Route::group([
 ], function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/verification', [AuthController::class, 'verification']);
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
     Route::post('/regenerate-otp-code', [AuthController::class, 'regenerateOtpCode']);
+    Route::post('/update-password', [AuthController::class, 'updatePassword'])->middleware('auth:api', 'email_verification', 'is_admin');
 });
+

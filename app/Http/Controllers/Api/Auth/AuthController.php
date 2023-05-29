@@ -7,13 +7,26 @@ use App\Models\OtpCode;
 use App\Events\UserRegistered;
 use App\Events\RegeneratedOtpCodeEvent;
 use Carbon\Carbon;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
 
 class AuthController extends Controller
 {
+    /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['login']]);
+    }
+    
     public function register(Request $request) 
     {
         // set validation
@@ -108,6 +121,79 @@ class AuthController extends Controller
             "response_code" => 201,
             "response_message" => "OTP Code generated!",
             "data" => $user
+        ], 201);
+    }
+
+    public function login(Request $request)
+    {
+        // set validation
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+            'password' => 'required'
+        ]);
+
+        // if validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        // get credentials from request
+        $credentials = $request->only('email', 'password');
+
+        // if auth failed
+        if (!$token = auth()->guard('api')->attempt($credentials)) {
+            return response()->json([
+                'response_code' => 401,
+                'response_message' => "Incorrect e-mail or password"
+            ], 401);
+        }
+
+        //if auth success
+        return response()->json([
+            'response_code' => 200,
+            'response_message' => "Logged in",
+            'user'    => auth()->guard('api')->user(),
+            'token'   => $token
+        ], 200);
+    }
+    
+    public function logout()
+    {
+        //remove token
+        $removeToken = JWTAuth::invalidate(JWTAuth::getToken());
+        auth()->logout();
+
+        if ($removeToken) {
+            //return response JSON
+            return response()->json([
+                'message' => 'Logout Success!',
+            ]);
+        }
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $id = auth()->user()->id;
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|min:8'
+        ]);
+
+        // if validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $user = User::find($id);
+
+        $user->update([
+            'password' => Hash::make($request['password'])
+        ]);
+
+        return response()->json([
+            'response_code' => 200,
+            'response_message' => 'Password updated successfully',
         ], 201);
     }
 }
