@@ -31,3 +31,7 @@ Route::group([
     Route::post('/update-password', [AuthController::class, 'updatePassword'])->middleware('auth:api', 'email_verification', 'is_admin');
 });
 
+Route::get('/get-profile', [\App\Http\Controllers\Api\UserController::class, 'getProfile'])->middleware('auth:api', 'email_verification');
+Route::post('/update-profile', [\App\Http\Controllers\Api\UserController::class, 'updateProfile'])->middleware('auth:api', 'email_verification');
+
+
