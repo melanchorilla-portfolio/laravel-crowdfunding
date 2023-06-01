@@ -1,5 +1,14 @@
 <template>
     <v-sheet width="600" class="mx-auto">
+        <div>
+            <v-alert
+                :type="alert.alertVariant"
+                v-if="alert.showAlert"
+                class="my-2"
+            >
+                {{ alert.alertMessage }}
+            </v-alert>
+        </div>
         <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
                 v-model="user.email"
@@ -36,7 +45,13 @@
 </template>
 
 <script>
+import { useUserStore } from '@/stores/user';
+
 export default {
+    setup() {
+        const userStore = useUserStore();
+        return { userStore }
+    },
     data() {
         return {
             valid: true,
@@ -67,7 +82,25 @@ export default {
             const { valid } = await this.$refs.form.validate();
 
             if (valid) {
-                this.$emit('closeDialog');
+                this.alert.showAlert = true;
+                this.alert.alertVariant = 'warning';
+                this.alert.alertMessage = 'Please wait!';
+
+
+                try {
+                    const authLogin = await axios.post('/api/auth/login', this.user);
+
+                    this.alert.alertVariant = 'success';
+                    this.alert.alertMessage = authLogin.data.response_message;
+                    
+                    await this.userStore.setToken(authLogin.data.token);
+
+                    this.$router.push('/');
+                    this.$emit("closeDialog");
+                } catch (error) {
+                    this.alert.alertVariant = 'error';
+                    this.alert.alertMessage = authLogin.data.response_message;
+                }
             }
         },
         reset() {

@@ -18,13 +18,14 @@
         <v-navigation-drawer app color="blue-lighten-1" v-model="drawer">
             <v-list>
                 <v-list-item
+                    v-if="userStore.isLogin"
                     prepend-avatar="https://randomuser.me/api/portraits/men/78.jpg"
-                    title="John Doe"
+                    :title="userStore.user.name"
                     nav
                 >
                 </v-list-item>
 
-                <div class="pa-2">
+                <div class="pa-2" v-if="!userStore.isLogin">
                     <v-btn
                         block
                         color="primary"
@@ -58,7 +59,7 @@
                 </v-list>
             </v-list>
 
-            <template v-slot:append>
+            <template v-slot:append v-if="userStore.isLogin">
                 <div class="pa-2">
                     <v-btn block color="" @click.prevent="">
                         <v-icon left>mdi-logout</v-icon>
@@ -87,9 +88,14 @@
 </template>
 
 <script>
+import { useUserStore } from './stores/user';
 import TabAuth from './components/auth/TabAuth.vue';
 
 export default {
+    setup() {
+        const userStore = useUserStore();
+        return { userStore }
+    },
     components: { TabAuth },
     data() {
         return {
