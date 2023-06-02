@@ -70,7 +70,13 @@
 </template>
 
 <script>
+import { useUserStore } from '@/stores/user';
+
 export default {
+    setup() {
+        const userStore = useUserStore();
+        return { userStore }
+    },
     data() {
         return {
             valid: true,
@@ -109,7 +115,26 @@ export default {
             const { valid } = await this.$refs.form.validate();
 
             if (valid) {
-                this.$emit("closeDialog");
+                this.alert.showAlert = true;
+                this.alert.alertVariant = "warning";
+                this.alert.alertMessage = "Please wait!";
+
+                try {
+                    const authRegister = await axios.post('/api/auth/register', this.user);
+                    this.alert.alertVariant = "success";
+                    this.alert.alertMessage = authRegister.data.response_message;
+
+                    const dataUser = authRegister.data.data.user;
+                    const token = authRegister.data.token;
+                    
+                    await this.userStore.setVerification(dataUser, token);
+
+                    this.$router.push("/");
+                    this.$emit("closeDialog");
+                } catch (error) {
+                    this.alert.alertVariant = "error";
+                    this.alert.alertMessage = error;
+                }
             }
         },
         reset() {

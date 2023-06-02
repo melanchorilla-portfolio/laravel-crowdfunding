@@ -99,7 +99,7 @@ export default {
                     this.$emit("closeDialog");
                 } catch (error) {
                     this.alert.alertVariant = 'error';
-                    this.alert.alertMessage = authLogin.data.response_message;
+                    this.alert.alertMessage = error;
                 }
             }
         },
