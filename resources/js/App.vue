@@ -8,7 +8,7 @@
 
             <v-app-bar-title>Crowdfunding App</v-app-bar-title>
 
-            <v-spacer></v-spacer>
+            <v-spacer />
 
            
         </v-app-bar>
@@ -35,7 +35,7 @@
                         <v-icon left>mdi-lock</v-icon>Login | Register</v-btn
                     >
                 </div>
-                <v-divider></v-divider>
+                <v-divider />
 
                 <v-list density="compact" nav>
                     <v-list-item
@@ -45,12 +45,14 @@
                         :to="{ path: '/' }"
                     ></v-list-item>
                     <v-list-item
+                        v-if="userStore.isAdmin"
                         prepend-icon="mdi-forum"
                         title="Campaign"
                         value="campaign"
                         :to="{ path: '/campaign' }"
                     ></v-list-item>
                     <v-list-item
+                        v-if="userStore.isNotVerification"
                         prepend-icon="mdi-account-alert"
                         title="Verification"
                         value="verification"
@@ -61,7 +63,7 @@
 
             <template v-slot:append v-if="userStore.isLogin">
                 <div class="pa-2">
-                    <v-btn block color="" @click.prevent="">
+                    <v-btn block color="" @click.prevent="logout">
                         <v-icon left>mdi-logout</v-icon>
                         Logout</v-btn
                     >
@@ -80,7 +82,7 @@
                 >
                     <tab-auth @closeDialog="closeDialog"></tab-auth>
                 </v-dialog>
-                <router-view></router-view>
+                <router-view />
             </v-container>
         </v-main>
         <!-- end v-main -->
@@ -107,6 +109,10 @@ export default {
         closeDialog() {
             this.dialog = false;
         },
+        async logout() {
+            await this.userStore.removeAuth();
+            this.$router.push('/');
+        }
     },
 };
 </script>

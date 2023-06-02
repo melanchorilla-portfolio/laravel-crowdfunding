@@ -44,6 +44,13 @@ export const useUserStore = defineStore('user', {
             }
 
             this.isLogin = true;
+        },
+        removeAuth() {
+            this.token = null;
+            this.user = null;
+            this.isLogin = false;
+            this.isAdmin = null;
+            this.isNotVerification = null;
         }
     },
     persist: true
