@@ -34,7 +34,7 @@ class UserRegenerateOtpCodeMail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            from: new Address('admin@example.com', 'Jeffrey Way'),
+            from: new Address('admin@example.com', 'Administrator'),
             subject: 'User Regenerate Otp Code Mail',
         );
     }

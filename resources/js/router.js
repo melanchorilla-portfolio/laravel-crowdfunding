@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { useUserStore } from './stores/user';
 
 import Home from './views/HomeView.vue';
 import Campaign from './views/CampaignView.vue';
@@ -13,18 +14,47 @@ const routes = [
     {
         path: '/campaign',
         name: 'campaign',
-        component: Campaign
+        component: Campaign,
+        meta: {
+            requiresAdmin: true
+        }
     },
     {
         path: '/verification',
         name: 'verification',
-        component: Verification
+        component: Verification,
+        meta: {
+            requiresVerification: true
+        }
     },
+    {
+        path: '/:catchAll(.*)',
+        redirect: '/'
+    }
 ];
 
 const router = createRouter({
     history: createWebHistory(),
     routes
+});
+
+
+router.beforeEach((to, from) => {
+    const auth = useUserStore();
+
+    if (to.meta.requiresVerification) {
+        if (!auth.isNotVerification) {
+            alert('Unauthorized');
+            return { path: '/' }
+        }
+    }
+
+    if (to.meta.requiresAdmin) {
+        if (!auth.isAdmin) {
+            alert('Unauthorized');
+            return { path: '/' }
+        }
+    }
 });
 
 
