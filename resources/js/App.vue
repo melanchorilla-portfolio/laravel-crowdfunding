@@ -19,7 +19,7 @@
             <v-list>
                 <v-list-item
                     v-if="userStore.isLogin"
-                    prepend-avatar="https://randomuser.me/api/portraits/men/78.jpg"
+                    :prepend-avatar="userStore.user.photo_profile ?? 'https://randomuser.me/api/portraits/men/78.jpg'"
                     :title="userStore.user.name"
                     nav
                 >

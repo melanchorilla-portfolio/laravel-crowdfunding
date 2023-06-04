@@ -33,6 +33,7 @@ Route::group([
 
 Route::get('/get-profile', [\App\Http\Controllers\Api\UserController::class, 'getProfile'])->middleware('auth:api');
 Route::post('/update-profile', [\App\Http\Controllers\Api\UserController::class, 'updateProfile'])->middleware('auth:api', 'email_verification');
+Route::get('/campaign/get-all', [\App\Http\Controllers\Api\CampaignController::class, 'getAll']);
 Route::apiResource('/campaign', 'App\Http\Controllers\Api\CampaignController');
 
 

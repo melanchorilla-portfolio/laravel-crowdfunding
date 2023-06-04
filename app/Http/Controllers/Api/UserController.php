@@ -39,7 +39,7 @@ class UserController extends Controller
             $image = $request->file('photo_profile');
             $image_extension = $image->extension();
             $image_name = time() . '.' . $image_extension;
-            $image_folder = '/upload/photo_profile/';
+            $image_folder = '/img/user/';
             $image_location = $image_folder . $image_name;
             $request->photo_profile->move(public_path($image_folder), $image_name);
 

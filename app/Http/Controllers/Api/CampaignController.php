@@ -11,6 +11,15 @@ use Illuminate\Validation\Rule;
 class CampaignController extends Controller
 {
     /**
+     * Constructor
+     *
+     */
+    public function __construct()
+    {
+        $this->middleware(['is_admin', 'auth'])->except(['show', 'getAll']);
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -55,7 +64,7 @@ class CampaignController extends Controller
             $image = $request->file('image');
             $image_extension = $image->extension();
             $image_name = time() . '.' . $image_extension;
-            $image_folder = '/photo/campaign/';
+            $image_folder = '/img/campaign/';
             $image_location = $image_folder . $image_name;
             $request->image->move(public_path($image_folder), $image_name);
         }
@@ -136,7 +145,7 @@ class CampaignController extends Controller
                 $image = $request->file('image');
                 $image_extension = $image->extension();
                 $image_name = time() . '.' . $image_extension;
-                $image_folder = '/photo/campaign/';
+                $image_folder = '/img/campaign/';
                 $image_location = $image_folder . $image_name;
                 $request->image->move(public_path($image_folder), $image_name);
                 if ($campaign_data->image != null) {
@@ -198,5 +207,18 @@ class CampaignController extends Controller
             'response_code' => 404,
             'response_message' => 'Campaign Not Found',
         ], 404);
+    }
+
+    public function getAll()
+    {
+        $campaigns = Campaign::paginate(2);
+
+        $data['campaigns'] = $campaigns;
+
+        return response()->json([
+            'response_code' => 200,
+            'response_message' => 'Campaign data',
+            'data' => $data
+        ], 200);
     }
 }

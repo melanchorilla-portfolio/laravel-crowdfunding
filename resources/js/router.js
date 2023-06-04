@@ -3,6 +3,7 @@ import { useUserStore } from './stores/user';
 
 import Home from './views/HomeView.vue';
 import Campaign from './views/CampaignView.vue';
+import DetailCampaign from './views/DetailCampaignView.vue';
 import Verification from './views/VerificationView.vue';
 
 const routes = [
@@ -18,6 +19,11 @@ const routes = [
         meta: {
             requiresAdmin: true
         }
+    },
+    {
+        path: '/campaign/:id',
+        name: 'campaign-detail',
+        component: DetailCampaign,
     },
     {
         path: '/verification',
