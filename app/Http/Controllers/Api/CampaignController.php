@@ -198,7 +198,7 @@ class CampaignController extends Controller
 
             return response()->json([
                 'response_code' => 200,
-                'response_message' => 'Cammpaign data deleted',
+                'response_message' => 'Campaign data deleted',
             ], 200);
         }
 
