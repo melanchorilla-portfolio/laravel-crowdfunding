@@ -5,6 +5,7 @@ import Home from './views/HomeView.vue';
 import Campaign from './views/CampaignView.vue';
 import DetailCampaign from './views/DetailCampaignView.vue';
 import Verification from './views/VerificationView.vue';
+import User from './views/UserView.vue';
 
 const routes = [
     {
@@ -32,6 +33,11 @@ const routes = [
         meta: {
             requiresVerification: true
         }
+    },
+    {
+        path: '/user',
+        name: 'user',
+        component: User,
     },
     {
         path: '/:catchAll(.*)',

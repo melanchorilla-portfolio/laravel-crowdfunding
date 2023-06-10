@@ -21,6 +21,7 @@
                     v-if="userStore.isLogin"
                     :prepend-avatar="userStore.user.photo_profile ?? 'https://randomuser.me/api/portraits/men/78.jpg'"
                     :title="userStore.user.name"
+                    :to="{ path: '/user' }"
                     nav
                 >
                 </v-list-item>
